@@ -12,8 +12,8 @@ import java.util.Properties;
 
 @Service
 public class EmailClass {
-    private final String senderGmailId="dc.rupys156@gmail.com";
-    private final String senderGmailPassword="neverhackgmail";
+    private final String senderGmailId="YOUREMAIL";
+    private final String senderGmailPassword="YOURPASSWORDHERE";
     private Session session;
     private MimeMessage mimeMessage;
 
