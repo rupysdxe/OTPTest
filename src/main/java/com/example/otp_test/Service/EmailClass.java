@@ -1,87 +1,36 @@
 package com.example.otp_test.Service;
-
-import jakarta.mail.*;
-import jakarta.mail.internet.InternetAddress;
-import jakarta.mail.internet.MimeBodyPart;
-import jakarta.mail.internet.MimeMessage;
-import jakarta.mail.internet.MimeMultipart;
-import org.springframework.stereotype.Service;
-import java.io.File;
-import java.io.IOException;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.MimeMessage;
+import java.util.Date;
 import java.util.Properties;
 
-@Service
 public class EmailClass {
-    private final String senderGmailId="YOUREMAIL";
-    private final String senderGmailPassword="YOURPASSWORDHERE";
-    private Session session;
-    private MimeMessage mimeMessage;
-
-    public EmailClass(){
-        session();
-    }
-    private void session(){
-        Properties properties=new Properties();
-        ///host set
+    public void setSubjectAndMessage(String subject, String message,String email){
+        Properties properties = new Properties();
         properties.put("mail.smtp.host","smtp.gmail.com");
         properties.put("mail.smtp.port","465");
         properties.put("mail.smtp.ssl.enable","true");
         properties.put("mail.smtp.auth","true");
+        Session session = Session.getInstance(properties, null);
 
-        Session session=Session.getInstance(properties, new Authenticator() {
-            @Override
-            protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication(senderGmailId,senderGmailPassword);
-            }
-        });
-        session.setDebug(true);
-        this.session=session;
-    }
-    public void setSubjectAndMessage(String subject, String message,String receiverGmailId){
         try {
-            MimeMessage mimeMessage=new MimeMessage(session);
-            mimeMessage.addRecipient(Message.RecipientType.TO,new InternetAddress(receiverGmailId));
-            mimeMessage.setSubject(subject);
-            mimeMessage.setContent("<h6>"+message+"</h6>","text/html");
-            this.mimeMessage=mimeMessage;
-            send();
-        } catch (MessagingException e) {
-            e.printStackTrace();
-        }
-
-    }
-    public void setMessageAndAttachment(String subject, String message, File file,String receiverGmailId){
-        try {
-            MimeMessage mimeMessage=new MimeMessage(session);
-            mimeMessage.addRecipient(Message.RecipientType.TO,new InternetAddress(receiverGmailId));
-            mimeMessage.setSubject(subject);
-            mimeMessage.setText(message);
-            ///Attaching the file
-            MimeMultipart attachment=new MimeMultipart();
-            MimeBodyPart mimeBodyPart=new MimeBodyPart();
-            try {
-                mimeBodyPart.attachFile(file);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            attachment.addBodyPart(mimeBodyPart);
-
-            mimeMessage.setContent(attachment);
-            ///Send the message
-            this.mimeMessage=mimeMessage;
-            send();
-        } catch (MessagingException e) {
-            e.printStackTrace();
-        }
-
-    }
-    public void send(){
-        try {
-            Transport.send(mimeMessage);
-        } catch (MessagingException e) {
-            e.printStackTrace();
+            MimeMessage msg = new MimeMessage(session);
+            msg.setFrom("Test");
+            msg.setRecipients(Message.RecipientType.TO,email);
+            msg.setSubject(subject);
+            msg.setSentDate(new Date());
+            msg.setText(message);
+            /// Set your gmail id and password. and MAKE SURE TO ENABLE ACCESS TO LESS SECURE OPTION IN ACCOUNT SETTING
+            // URL: https://myaccount.google.com/lesssecureapps?pli=1&rapt=AEjHL4MMxZK-YQkUJIpU5TFbst3ntFror1Wczr8uoQtQV8UFW0AgxrHvoyDbeSy0ZmkAEROjmMyhFNZRQ3l-v7hhcVV2zLyvIA
+            String senderGmailId = "YOUREMAILID";
+            String senderGmailPassword = "YOURPASSWORD";
+            //Ends here
+            Transport.send(msg, senderGmailId, senderGmailPassword);
+        } catch (MessagingException mex) {
+            System.out.println("send failed, exception: " + mex);
         }
     }
-
-
 }
