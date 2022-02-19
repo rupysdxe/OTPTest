@@ -24,8 +24,7 @@ public class EmailClass {
             msg.setSentDate(new Date());
             msg.setText(message);
             /// Set your gmail id and password. and MAKE SURE TO ENABLE ACCESS TO LESS SECURE OPTION IN ACCOUNT SETTING
-            // URL: https://myaccount.google.com/lesssecureapps?pli=1&rapt=AEjHL4MMxZK-YQkUJIpU5TFbst3ntFror1Wczr8uoQtQV8UFW0AgxrHvoyDbeSy0ZmkAEROjmMyhFNZRQ3l-v7hhcVV2zLyvIA
-            String senderGmailId = "YOUREMAILID";
+             String senderGmailId = "YOUREMAILID";
             String senderGmailPassword = "YOURPASSWORD";
             //Ends here
             Transport.send(msg, senderGmailId, senderGmailPassword);
